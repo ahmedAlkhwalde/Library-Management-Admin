@@ -1,9 +1,357 @@
-@import "tailwindcss";
+/* @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-@theme {
-    --color-primary: #0E6478;
-    --color-secondary: #fff;
-    --color-secondary-dark: #1F1F1F;
+:root {
+
+    --color-primary: #f6f5ff;    
+    --color-secondary: #ffffff; 
+    --color-accent: #735bf2;     
+    --color-accent-secondary: #5b44d6;
+    
+    --color-text: #1a202c;       
+    --color-grey: #4a5568;      
+    --color-border: #e2e8f0;  
+    
+    
+    --color-input-bg: #f3f1fc;  
+    
+    --color-success: #10b981;
+    --color-warning: #f59e0b;
+    --color-danger: #ef4444;   
+    --color-info: #3b82f6;
+
+    --color-on-accent: #ffffff; 
+    --color-accent-soft: color-mix(in srgb, var(--color-accent) 12%, transparent);
+    --color-accent-strong: color-mix(in srgb, var(--color-accent) 85%, var(--color-primary));
+    --color-surface-90: color-mix(in srgb, var(--color-secondary) 90%, transparent);
+    
+    --color-surface-hover: color-mix(in srgb, var(--color-secondary) 95%, var(--color-accent));
+    --color-danger-soft: color-mix(in srgb, var(--color-danger) 12%, transparent);
+    --color-overlay: color-mix(in srgb, var(--color-text) 10%, transparent);
+    --color-shadow-accent: color-mix(in srgb, var(--color-accent) 18%, transparent);
+    
+    --main-gradient: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-secondary) 100%);
+    
+    --font-family: 'Almarai', sans-serif;
+    --font-handwritten: 'Caveat', cursive; 
+}
+
+.dark {
+    --color-primary: #0b0f19;   
+    --color-secondary: #161b26;  
+    
+    --color-accent: #8b77ff;  
+    --color-accent-secondary: #a293ff;
+    
+    --color-input-bg: #1f2635;  
+    
+    --color-text: #f8fafc;   
+    --color-grey: #94a3b8;   
+    --color-border: #242b3d;    
+    
+    --color-on-accent: #0b0f19;
+    --color-accent-strong: color-mix(in srgb, var(--color-accent) 70%, var(--color-primary));
+    --color-overlay: color-mix(in srgb, var(--color-primary) 60%, transparent);
+    --color-shadow-accent: color-mix(in srgb, var(--color-accent) 30%, transparent);
+    --color-surface-hover: color-mix(in srgb, var(--color-secondary) 85%, var(--color-accent));
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap');
+
+* {
+    font-family: var(--font-family) !important;
+}
+
+.font-caveat {
+    font-family: 'Caveat', cursive !important;
+}
+
+body {
+    background-color: var(--color-primary);
+    background-image: linear-gradient(180deg,
+        color-mix(in srgb, var(--color-secondary) 30%, transparent) 0%,
+        var(--color-primary) 50%,
+        color-mix(in srgb, var(--color-accent) 6%, var(--color-primary)) 100%);
+    color: var(--color-text);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.theme-brand-title {
+    font-family: var(--font-handwritten) !important;
+    color: var(--color-text);
+    line-height: 1.1;
+}
+
+.theme-surface {
+    background-color: var(--color-secondary);
+    background-image: linear-gradient(160deg,
+        color-mix(in srgb, var(--color-secondary) 98%, white) 0%,
+        var(--color-secondary) 50%,
+        color-mix(in srgb, var(--color-accent) 3%, var(--color-secondary)) 100%);
+    border: 1px solid var(--color-border);
+    box-shadow: 0px 24px 48px rgba(0, 0, 0, 0.04), 0px 4px 12px var(--color-shadow-accent);
+}
+
+.theme-input {
+    background-color: var(--color-input-bg);
+    border: 2px solid transparent;
+    color: var(--color-text);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 15px;
+    transition: all 0.25s ease-in-out;
+}
+
+.theme-input::placeholder {
+    color: var(--color-grey);
+    opacity: 0.7;
+}
+
+.theme-input:focus {
+    outline: none;
+    background-color: var(--color-secondary);
+    border-color: var(--color-accent);
+    box-shadow: 0px 0px 0px 4px var(--color-shadow-accent);
+}
+
+.theme-accent {
+    background-color: var(--color-accent);
+    background-image: linear-gradient(135deg,
+        color-mix(in srgb, var(--color-accent) 95%, white) 0%,
+        var(--color-accent) 50%,
+        color-mix(in srgb, var(--color-accent) 85%, var(--color-primary)) 100%);
+    color: var(--color-on-accent);
+    box-shadow: 0px 8px 20px var(--color-shadow-accent);
+    transition: all 0.2s ease;
+}
+
+.theme-accent:hover {
+    background-color: var(--color-accent-secondary);
+    transform: translateY(-1px);
+}
+
+.theme-accent:active {
+    transform: translateY(1px);
+}
+
+.theme-bg {
+    background-color: var(--color-primary);
+    background-image: linear-gradient(160deg,
+        color-mix(in srgb, var(--color-secondary) 18%, transparent) 0%,
+        var(--color-primary) 52%,
+        color-mix(in srgb, var(--color-accent) 9%, var(--color-primary)) 100%);
+}
+
+.theme-surface-90 {
+    background-color: var(--color-surface-90);
+    background-image: linear-gradient(160deg,
+        color-mix(in srgb, var(--color-secondary) 92%, transparent) 0%,
+        var(--color-surface-90) 50%,
+        color-mix(in srgb, var(--color-accent) 8%, transparent) 100%);
+}
+
+.theme-accent-strong {
+    background-color: var(--color-accent-strong);
+    background-image: linear-gradient(135deg,
+        color-mix(in srgb, var(--color-accent) 95%, white) 0%,
+        var(--color-accent-strong) 52%,
+        color-mix(in srgb, var(--color-accent) 72%, var(--color-primary)) 100%);
+}
+
+.theme-accent-soft {
+    background-color: var(--color-accent-soft);
+    background-image: linear-gradient(135deg,
+        color-mix(in srgb, var(--color-accent) 18%, transparent) 0%,
+        color-mix(in srgb, var(--color-accent) 8%, transparent) 100%);
+}
+
+.theme-danger-soft {
+    background-color: var(--color-danger-soft);
+    background-image: linear-gradient(135deg,
+        color-mix(in srgb, var(--color-danger) 16%, transparent) 0%,
+        color-mix(in srgb, var(--color-danger) 7%, transparent) 100%);
+}
+
+.theme-overlay {
+    background-color: var(--color-overlay);
+    background-image: linear-gradient(180deg,
+        color-mix(in srgb, var(--color-overlay) 60%, transparent) 0%,
+        color-mix(in srgb, var(--color-overlay) 90%, transparent) 100%);
+}
+
+.theme-text { color: var(--color-text); }
+.theme-text-muted { color: var(--color-grey); }
+.theme-text-accent { color: var(--color-accent); }
+.theme-text-on-accent { color: var(--color-on-accent); }
+.theme-text-danger { color: var(--color-danger); }
+.theme-border { border-color: var(--color-border); }
+.theme-shadow-accent { box-shadow: 0 12px 24px var(--color-shadow-accent); }
+
+.theme-hover-surface:hover {
+    background-color: var(--color-surface-hover);
+    background-image: linear-gradient(135deg,
+        color-mix(in srgb, var(--color-secondary) 90%, white) 0%,
+        var(--color-surface-hover) 100%);
+}
+
+.theme-hover-accent:hover {
+    background-color: var(--color-accent-soft);
+    background-image: linear-gradient(135deg,
+        color-mix(in srgb, var(--color-accent) 24%, transparent) 0%,
+        color-mix(in srgb, var(--color-accent) 10%, transparent) 100%);
+}
+
+.theme-gradient-header {
+    background-image: linear-gradient(135deg,
+        color-mix(in srgb, var(--color-accent) 12%, var(--color-secondary)) 0%,
+        color-mix(in srgb, var(--color-secondary) 96%, transparent) 44%,
+        color-mix(in srgb, var(--color-accent) 8%, var(--color-primary)) 100%);
+}
+
+.theme-gradient-panel {
+    background-image: linear-gradient(135deg,
+        color-mix(in srgb, var(--color-accent) 15%, var(--color-secondary)) 0%,
+        color-mix(in srgb, var(--color-secondary) 94%, transparent) 45%,
+        color-mix(in srgb, var(--color-accent) 9%, var(--color-secondary)) 100%);
+}
+
+.theme-gradient-border {
+    background-image: linear-gradient(135deg,
+        color-mix(in srgb, var(--color-accent) 82%, white) 0%,
+        color-mix(in srgb, var(--color-accent) 40%, var(--color-secondary)) 50%,
+        color-mix(in srgb, var(--color-accent) 75%, var(--color-primary)) 100%);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -webkit-appearance: textfield;
+  appearance: textfield;
+}
+
+.theme-hover-danger:hover {
+    background-color: var(--color-danger-soft);
+    background-image: linear-gradient(135deg,
+        color-mix(in srgb, var(--color-danger) 22%, transparent) 0%,
+        color-mix(in srgb, var(--color-danger) 10%, transparent) 100%);
+}
+
+.theme-hover-danger-solid:hover {
+    background-color: var(--color-danger);
+    background-image: linear-gradient(135deg,
+        color-mix(in srgb, var(--color-danger) 92%, white) 0%,
+        var(--color-danger) 100%);
+    color: white;
+}
+
+.theme-hover-text-accent:hover { color: var(--color-accent); }
+.no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; } */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap');
+
+@import "tailwindcss";
+
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+    --color-primary: #f6f5ff;     
+    --color-secondary: #ffffff;  
+    --color-accent: #735bf2;      
+    --color-accent-secondary: #5b44d6;
+    
+    --color-text: #1a202c;       
+    --color-grey: #4a5568;          
+    --color-border: #e2e8f0;      
+    
+    --color-input-bg: #f3f1fc;   
+    
+    --color-on-accent: #ffffff;    
+    --color-shadow-accent: color-mix(in srgb, var(--color-accent) 18%, transparent);
+    
+    --font-family: 'Almarai', sans-serif;
+
+    --ui-bg: #ffffff;
+    --ui-text: #000000;
+    --ui-text-muted: #6b7280;
+    --ui-text-label: #4b5563;
+    --ui-input-bg: #f5f6fa;
+    --ui-card-border: #f4f3f9;
+    --ui-primary: #7f5ff4;
+    --ui-primary-hover: #5b4cc4;
+    --ui-link: #7f5ff4;
+    --ui-card-bg: rgba(255, 255, 255, 0.01);
+    --ui-card-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), 0px -4px 4px rgba(70, 72, 212, 0.15);
+}
+
+.dark {
+    --color-primary: #0b0f19;       
+    --color-secondary: #161b26;     
+    --color-accent: #8b77ff;       
+    --color-accent-secondary: #a293ff;
+    
+    --color-input-bg: #1f2635;      
+    --color-text: #f8fafc;          
+    --color-grey: #94a3b8;          
+    --color-border: #242b3d;        
+    
+    --color-on-accent: #0b0f19;
+    --color-shadow-accent: color-mix(in srgb, var(--color-accent) 30%, transparent);
+}
+
+* {
+    font-family: var(--font-family) !important;
+}
+
+.font-caveat {
+    font-family: 'Caveat', cursive !important;
+}
+
+body {
+    background-color: var(--color-primary);
+    color: var(--color-text);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+
+.theme-surface {
+    background-color: var(--color-secondary);
+    border: 1px solid var(--color-border);
+    box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.04), 0px 4px 12px var(--color-shadow-accent);
+}
+
+.theme-input {
+    background-color: var(--color-input-bg);
+    border: 2px solid transparent;
+    color: var(--color-text);
+    transition: all 0.2s ease-in-out;
+}
+
+.theme-input::placeholder {
+    color: var(--color-grey);
+    opacity: 0.7;
+}
+
+.theme-input:focus {
+    outline: none;
+    background-color: var(--color-secondary);
+    border-color: var(--color-accent);
+    box-shadow: 0px 0px 0px 4px var(--color-shadow-accent);
+}
+
+.theme-accent {
+    background-color: var(--color-accent);
+    color: var(--color-on-accent);
+    box-shadow: 0px 8px 20px var(--color-shadow-accent);
+    transition: all 0.2s ease;
+}
+
+.theme-accent:hover {
+    background-color: var(--color-accent-secondary);
 }
