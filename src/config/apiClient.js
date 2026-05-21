@@ -2,9 +2,8 @@ import axios from 'axios';
 
 // 1. إنشاء نسخة مخصصة من Axios بإعدادات ثابتة
 const apiClient = axios.create({
-  baseURL: 'http://localhost:8000/api', 
+  baseURL: 'http://192.168.9.230:8000/api', 
   
-  // وقت الانتظار الأقصى للطلب (10 ثوانٍ)
   timeout: 10000, 
   
   headers: {
@@ -12,3 +11,16 @@ const apiClient = axios.create({
     'Accept': 'application/json',
   },
 });
+
+// apiClient.interceptors.request.use(
+//   (config) => {
+//     const token = localStorage.getItem('token');
+//     if (token) {
+//       config.headers.Authorization = `Bearer ${token}`;
+//     }
+//     return config;
+//   },
+//   (error) => Promise.reject(error),
+// );
+
+export default apiClient;

@@ -1,10 +1,17 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import InputField from "./InputField";
 import PasswordField from "./PasswordField";
+import AppSnackbar from "../../../components/AppSnackbar";
+import { useLoginMutation } from "../services/authService";
+import { setLoginSuccess } from "../store/authSlice";
 
 export default function LoginForm() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const loginMutation = useLoginMutation();
   const [showPassword, setShowPassword] = useState(false);
   const [values, setValues] = useState({
     email: "",
@@ -12,6 +19,26 @@ export default function LoginForm() {
   });
   const [touched, setTouched] = useState({});
   const [errors, setErrors] = useState({});
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    variant: "success",
+  });
+
+  const openSnackbar = (message, variant = "success") => {
+    setSnackbar({ open: true, message, variant });
+  };
+
+  const closeSnackbar = () => setSnackbar((prev) => ({ ...prev, open: false }));
+
+  const getErrorMessage = (error) =>
+    error?.response?.data?.message ||
+    error?.response?.data?.error ||
+    error?.message ||
+    "Login failed.";
+
+  const extractToken = (data) =>
+        data?.token || data?.access_token || data?.data?.token || null;;
 
   const validateField = (field, value) => {
     switch (field) {
@@ -66,7 +93,29 @@ export default function LoginForm() {
     setErrors(nextErrors);
     setTouched({ email: true, password: true });
     if (Object.keys(nextErrors).length === 0) {
-      // Valid form; no submission behavior defined yet.
+      loginMutation.mutate(values, {
+        onSuccess: (data) => {
+          const token = extractToken(data);
+          if (!token) {
+            openSnackbar("Login response is missing a token.", "error");
+            return;
+          }
+          const user = data?.user || data?.data?.user || null;
+          dispatch(setLoginSuccess({ user, token }));
+          navigate("/app/main-page", {
+            replace: true,
+            state: {
+              snackbar: {
+                message: "Logged in successfully.",
+                variant: "success",
+              },
+            },
+          });
+        },
+        onError: (error) => {
+          openSnackbar(getErrorMessage(error), "error");
+        },
+      });
     }
   };
 
@@ -97,11 +146,18 @@ export default function LoginForm() {
 
       <button
         type="submit"
-        className="w-full bg-[var(--ui-primary)] hover:bg-[var(--ui-primary-hover)] text-white rounded-full py-2.5 lg:py-3 text-[17px] cursor-pointer font-semibold transition-all mt-2 active:scale-[0.98]"
+        disabled={loginMutation.isPending}
+        aria-busy={loginMutation.isPending}
+        className="w-full bg-(--ui-primary) hover:bg-(--ui-primary-hover) text-white rounded-full py-2.5 lg:py-3 text-[17px] cursor-pointer font-semibold transition-all mt-2 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100"
       >
-        Sign In
+        {loginMutation.isPending ? "Signing In..." : "Sign In"}
       </button>
-
+      <AppSnackbar
+        open={snackbar.open}
+        message={snackbar.message}
+        variant={snackbar.variant}
+        onClose={closeSnackbar}
+      />
     </form>
   );
 }
