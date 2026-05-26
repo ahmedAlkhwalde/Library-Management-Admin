@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import Login from "../pages/login.jsx";
-import MainPage from "../pages/MainPage.jsx";
+import CategoriesPage from "../pages/CategoriesPage.jsx";
+import DashboardPage from "../pages/DashboardPage.jsx";
 import MainLayout from "../layout/MainLayout.jsx";
 import RootRedirect from "./RootRedirect.jsx";
 
@@ -27,15 +28,15 @@ export const router = createBrowserRouter([
       },
       {
         path: "dashboard",
-        element: <MainPage />,
+        element: <DashboardPage />,
+      },
+      {
+        path: "categories",
+        element: <CategoriesPage />,
       },
       // {
       //   path: "books",
       //   element: <BooksPage />,
-      // },
-      // {
-      //   path: "categories",
-      //   element: <CategoriesPage />,
       // },
     ],
   },

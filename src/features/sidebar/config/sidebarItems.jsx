@@ -20,12 +20,12 @@ export const sidebarItems = [
 //     icon: <MenuBookOutlined />,
 //     to: "/app/books",
 //   },
-//   {
-//     key: "categories",
-//     label: "Categories",
-//     icon: <FolderOutlined />,
-//     to: "/app/categories",
-//   },
+   {
+     key: "categories",
+     label: "Categories",
+     icon: <FolderOutlined />,
+     to: "/app/categories",
+   },
 //   {
 //     key: "users",
 //     label: "Users",

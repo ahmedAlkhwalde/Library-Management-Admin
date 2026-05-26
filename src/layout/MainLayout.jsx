@@ -3,13 +3,13 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Menu } from "@mui/icons-material";
 import AppSnackbar from "../components/AppSnackbar.jsx";
 import Sidebar from "./Sidebar.jsx";
+import TopBar from "../components/TopBar.jsx";
 
 export default function MainLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const snackbar = location.state?.snackbar;
-  const isSnackbarOpen = Boolean(snackbar?.message);
 
   const handleCloseSnackbar = () => {
     if (!snackbar) return;
@@ -19,7 +19,9 @@ export default function MainLayout() {
   return (
     <div className="min-h-screen flex bg-(--color-primary)">
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+
       <div className="flex-1 flex flex-col min-w-0">
+        {/* Mobile hamburger header */}
         <header className="md:hidden sticky top-0 z-10 bg-(--color-primary) backdrop-blur border-b border-(--color-border)">
           <div className="flex items-center gap-3 p-4">
             <button
@@ -35,12 +37,18 @@ export default function MainLayout() {
             </span>
           </div>
         </header>
-        <main className="flex-1 p-5 md:p-8">
+
+        {/* Shared desktop top bar — search + notifications + admin */}
+        <TopBar />
+
+        {/* Page content */}
+        <main className="flex-1 p-5 md:p-8 overflow-y-auto">
           <Outlet />
         </main>
       </div>
+
       <AppSnackbar
-        open={isSnackbarOpen}
+        open={Boolean(snackbar?.message)}
         message={snackbar?.message || ""}
         variant={snackbar?.variant || "success"}
         onClose={handleCloseSnackbar}
