@@ -38,7 +38,7 @@ export default function LoginForm() {
     "Login failed.";
 
   const extractToken = (data) =>
-        data?.token || data?.access_token || data?.data?.token || null;;
+    data?.token || data?.access_token || data?.data?.token || null;
 
   const validateField = (field, value) => {
     switch (field) {
@@ -102,7 +102,7 @@ export default function LoginForm() {
           }
           const user = data?.user || data?.data?.user || null;
           dispatch(setLoginSuccess({ user, token }));
-          navigate("/app/main-page", {
+          navigate("/app/dashboard", {
             replace: true,
             state: {
               snackbar: {
