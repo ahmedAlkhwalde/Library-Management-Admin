@@ -4,6 +4,7 @@ import CategoriesPage from "../pages/CategoriesPage.jsx";
 import DashboardPage from "../pages/DashboardPage.jsx";
 import MainLayout from "../layout/MainLayout.jsx";
 import RootRedirect from "./RootRedirect.jsx";
+import BooksPage from "../pages/BooksPage.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -34,10 +35,10 @@ export const router = createBrowserRouter([
         path: "categories",
         element: <CategoriesPage />,
       },
-      // {
-      //   path: "books",
-      //   element: <BooksPage />,
-      // },
+      {
+        path: "books",
+        element: <BooksPage />,
+      },
     ],
   },
 ]);
