@@ -70,7 +70,8 @@ const handleDeleteClick = (book) => {
   }
 
   return (
-    <div>
+    <div className="min-h-screen bg-gray-50">
+      <main className="p-6 max-w-7xl mx-auto">
         <BooksHeader onAddBook={() => setIsModalOpen(true)} />
 
         <BookTable
@@ -85,6 +86,7 @@ const handleDeleteClick = (book) => {
             lastPage={data?.pagination?.last_page}
             onPageChange={setPage}
         />
+      </main>
       
       <BooksModal
         open={isModalOpen}

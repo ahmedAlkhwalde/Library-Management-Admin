@@ -47,7 +47,7 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
         />
       )}
       <aside
-        className={`fixed inset-y-0 left-0 z-30 w-64 md:w-72 bg-(--color-secondary) flex flex-col p-4 md:p-6 border-r border-(--color-border) shadow-lg md:shadow-none transform transition-transform duration-200 md:static md:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-30 w-64 md:w-72 bg-(--color-secondary) flex flex-col p-4 md:p-6 border-r border-(--color-border) shadow-lg md:shadow-none overflow-hidden transform transition-transform duration-200 md:sticky md:top-0 md:h-screen md:translate-x-0 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -73,61 +73,65 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
           </button>
         </div>
 
-        <nav className="flex-1 flex flex-col gap-2">
-          {sidebarItems
-            .filter((item) => item.action !== "logout")
-            .map((item) => {
-              return (
-                <NavLink
-                  key={item.key}
-                  to={item.to}
-                  onClick={onClose}
-                  className={({ isActive }) =>
-                    `${baseItemClass} ${
-                      isActive ? activeItemClass : inactiveItemClass
-                    }`
-                  }
-                >
-                  {({ isActive }) => (
-                    <>
-                      <span
-                        className={
-                          isActive
-                            ? "text-(--color-accent)"
-                            : "text-(--color-grey)"
-                        }
-                      >
-                        {item.icon}
-                      </span>
-                      <span className="font-medium">{item.label}</span>
-                    </>
-                  )}
-                </NavLink>
-              );
-            })}
-        </nav>
+        <div className="flex-1 min-h-0">
+          <nav className="h-full flex flex-col gap-2 overflow-y-auto pr-1">
+            {sidebarItems
+              .filter((item) => item.action !== "logout")
+              .map((item) => {
+                return (
+                  <NavLink
+                    key={item.key}
+                    to={item.to}
+                    onClick={onClose}
+                    className={({ isActive }) =>
+                      `${baseItemClass} ${
+                        isActive ? activeItemClass : inactiveItemClass
+                      }`
+                    }
+                  >
+                    {({ isActive }) => (
+                      <>
+                        <span
+                          className={
+                            isActive
+                              ? "text-(--color-accent)"
+                              : "text-(--color-grey)"
+                          }
+                        >
+                          {item.icon}
+                        </span>
+                        <span className="font-medium">{item.label}</span>
+                      </>
+                    )}
+                  </NavLink>
+                );
+              })}
+          </nav>
+        </div>
 
-        {logoutItem && (
-          <button
-            type="button"
-            onClick={handleLogout}
-            className={`${baseItemClass} ${inactiveItemClass} text-left mb-3`}
-            disabled={logoutMutation.isPending}
-            aria-busy={logoutMutation.isPending}
-          >
-            <span className="text-(--color-grey)">{logoutItem.icon}</span>
-            <span className="font-medium">{logoutItem.label}</span>
-          </button>
-        )}
+        <div className="shrink-0 pt-3">
+          {logoutItem && (
+            <button
+              type="button"
+              onClick={handleLogout}
+              className={`${baseItemClass} ${inactiveItemClass} text-left w-full mb-3`}
+              disabled={logoutMutation.isPending}
+              aria-busy={logoutMutation.isPending}
+            >
+              <span className="text-(--color-grey)">{logoutItem.icon}</span>
+              <span className="font-medium">{logoutItem.label}</span>
+            </button>
+          )}
 
-        <div className="hidden md:block bg-[color-mix(in_srgb,var(--color-accent)_8%,var(--color-secondary))] p-4 rounded-2xl text-center border border-(--color-border)">
-          <MenuBook className="text-(--color-accent) text-3xl mx-auto mb-2" />
-          <h3 className="font-bold text-(--color-text) text-base">
-            Green Team Library
-          </h3>
-          <p className="text-(--color-grey) text-xs mt-1 leading-relaxed">
-            Smart Library Management for a better future.
-          </p>
+          <div className="hidden md:block bg-[color-mix(in_srgb,var(--color-accent)_8%,var(--color-secondary))] p-4 rounded-2xl text-center border border-(--color-border)">
+            <MenuBook className="text-(--color-accent) text-3xl mx-auto mb-2" />
+            <h3 className="font-bold text-(--color-text) text-base">
+              Green Team Library
+            </h3>
+            <p className="text-(--color-grey) text-xs mt-1 leading-relaxed">
+              Smart Library Management for a better future.
+            </p>
+          </div>
         </div>
       </aside>
     </>

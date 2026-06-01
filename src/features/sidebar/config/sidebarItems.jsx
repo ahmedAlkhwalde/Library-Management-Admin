@@ -26,12 +26,12 @@ export const sidebarItems = [
      icon: <FolderOutlined />,
      to: "/app/categories",
    },
-//   {
-//     key: "users",
-//     label: "Users",
-//     icon: <PeopleOutline />,
-//     to: "/app/users",
-//   },
+  {
+    key: "users",
+    label: "Users",
+    icon: <PeopleOutline />,
+    to: "/app/users",
+  },
 //   {
 //     key: "borrow-requests",
 //     label: "Borrow Requests",

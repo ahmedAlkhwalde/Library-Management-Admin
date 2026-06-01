@@ -68,7 +68,7 @@ const [imgError, setImgError] = useState(false);
                 ].map((h) => (
                   <th
                     key={h}
-                    className="px-6 py-4 text-left text-xs font-bold tracking-wider text-gray-600"
+                    className="px-3 py-3 text-left text-xs font-bold tracking-wider text-gray-600"
                   >
                     {h}
                   </th>
@@ -81,7 +81,7 @@ const [imgError, setImgError] = useState(false);
                 Array.from({ length: 6 }).map((_, i) => (
                   <tr key={i} className="border-b border-gray-100">
                     {Array.from({ length: 8 }).map((_, j) => (
-                      <td key={j} className="px-6 py-4">
+                      <td key={j} className="px-3 py-3">
                         <div className="h-4 bg-gray-100 rounded animate-pulse" />
                       </td>
                     ))}
@@ -109,22 +109,22 @@ const [imgError, setImgError] = useState(false);
                       onClick={() => handleViewDetails(book)}
                     >
                       {/* BOOK */}
-                      <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center gap-4">
+                      <td className="px-3 py-3" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-center gap-3">
                           <img
                              src={imgError ? "https://picsum.photos/id/24/400/500" : book.image}
                             alt={book.title}
-                            className="w-12 h-16 rounded-lg object-cover border border-gray-200 cursor-pointer hover:opacity-80"
+                            className="w-10 h-14 rounded-lg object-cover border border-gray-200 cursor-pointer hover:opacity-80"
                             onClick={() => handleViewDetails(book)}
                           />
                           <div>
                             <p
-                              className="font-semibold text-gray-900 cursor-pointer hover:text-blue-600"
+                              className="font-semibold text-sm text-gray-900 cursor-pointer hover:text-blue-600"
                               onClick={() => handleViewDetails(book)}
                             >
                               {book.title}
                             </p>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-xs text-gray-500">
                               Book #{book.id}
                             </p>
                           </div>
@@ -132,36 +132,36 @@ const [imgError, setImgError] = useState(false);
                       </td>
 
                       {/* AUTHOR */}
-                      <td className="px-6 py-4 text-sm text-gray-700">
+                      <td className="px-3 py-3 text-sm text-gray-700">
                         {book.author}
                       </td>
 
                       {/* CATEGORY */}
-                      <td className="px-6 py-4">
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
+                      <td className="px-3 py-3">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200 whitespace-nowrap">
                           {book.category_name}
                         </span>
                       </td>
 
                       {/* TOTAL COPIES */}
-                      <td className="px-6 py-4 text-sm font-medium text-gray-700">
+                      <td className="px-3 py-3 text-sm font-medium text-gray-700">
                         {totalCopies}
                       </td>
 
                       {/* AVAILABLE */}
-                      <td className="px-6 py-4 text-sm text-gray-700">
+                      <td className="px-3 py-3 text-sm text-gray-700">
                         {book.available_copies}
                       </td>
 
                       {/* BORROWED */}
-                      <td className="px-6 py-4 text-sm text-gray-700">
+                      <td className="px-3 py-3 text-sm text-gray-700">
                         {book.borrowed_copies}
                       </td>
 
                       {/* STATUS */}
-                      <td className="px-6 py-4">
+                      <td className="px-3 py-3">
                         <span
-                          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${
+                          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border whitespace-nowrap ${
                             book.status === "available"
                               ? "bg-green-50 text-green-700 border-green-200"
                               : "bg-red-50 text-red-700 border-red-200"
@@ -172,24 +172,24 @@ const [imgError, setImgError] = useState(false);
                       </td>
 
                       {/* ACTIONS */}
-                      <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center gap-2">
+                      <td className="px-3 py-3" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-center gap-1">
                           <button
-                            className="p-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
+                            className="p-1.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
                             onClick={() => handleViewDetails(book)}
                             title="View Details"
                           >
                             <VisibilityOutlinedIcon fontSize="small" />
                           </button>
                           <button
-                            className="p-2 rounded-lg border border-blue-200 text-blue-600 hover:bg-blue-50 transition-colors"
+                            className="p-1.5 rounded-lg border border-blue-200 text-blue-600 hover:bg-blue-50 transition-colors"
                             onClick={() => handleEditClick(book)}
                             title="Edit"
                           >
                             <EditOutlinedIcon fontSize="small" />
                           </button>
                           <button
-                            className="p-2 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 transition-colors"
+                            className="p-1.5 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 transition-colors"
                             onClick={() => onDelete?.(book)}
                             title="Delete"
                           >
