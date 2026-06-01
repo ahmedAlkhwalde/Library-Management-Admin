@@ -5,6 +5,7 @@ import DashboardPage from "../pages/DashboardPage.jsx";
 import MainLayout from "../layout/MainLayout.jsx";
 import RootRedirect from "./RootRedirect.jsx";
 import BooksPage from "../pages/BooksPage.jsx";
+import UserPage from "../pages/User.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
       {
         path: "books",
         element: <BooksPage />,
+      },
+      {
+        path: "users",
+        element: <UserPage />,
       },
     ],
   },

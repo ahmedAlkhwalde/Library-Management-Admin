@@ -42,7 +42,7 @@ export default function MainLayout() {
         <TopBar />
 
         {/* Page content */}
-        <main className="flex-1 p-5 md:p-8 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto">
           <Outlet />
         </main>
       </div>
