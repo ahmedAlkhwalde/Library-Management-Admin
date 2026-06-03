@@ -9,7 +9,10 @@ const HEADERS = [
   "ACTIONS",
 ];
 
-export default function UserTable({ users = [], isLoading, onView }) {
+export default function UserTable({ users = [], isLoading, onView, onBlock }) {
+  // التأكد أن users مصفوفة دائماً لتجنب خطأ map
+  const safeUsers = Array.isArray(users) ? users : [];
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full">
@@ -27,6 +30,7 @@ export default function UserTable({ users = [], isLoading, onView }) {
         </thead>
         <tbody>
           {isLoading ? (
+            // حالة التحميل (Skeleton)
             Array.from({ length: 6 }).map((_, i) => (
               <tr key={i} className="border-b border-gray-100">
                 {HEADERS.map((h) => (
@@ -36,7 +40,8 @@ export default function UserTable({ users = [], isLoading, onView }) {
                 ))}
               </tr>
             ))
-          ) : users.length === 0 ? (
+          ) : safeUsers.length === 0 ? (
+            // حالة عدم وجود نتائج
             <tr>
               <td
                 colSpan={6}
@@ -46,11 +51,13 @@ export default function UserTable({ users = [], isLoading, onView }) {
               </td>
             </tr>
           ) : (
-            users.map((user, index) => (
+            // عرض البيانات
+            safeUsers.map((user, index) => (
               <UserRow
-                key={`${user.email}-${index}`}
+                key={user.id || `${user.email}-${index}`}
                 user={user}
                 onView={onView}
+                onBlock={onBlock} // تم تمرير الدالة هنا لتصل إلى الزر
               />
             ))
           )}

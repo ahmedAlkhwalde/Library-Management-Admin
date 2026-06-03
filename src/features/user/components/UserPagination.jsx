@@ -3,12 +3,15 @@ export default function UserPagination({
   currentPage = 1,
   totalPages = 1,
   onPageChange,
+  pageSize = 10, // تحديث القيمة الافتراضية إلى 10
 }) {
   if (totalCount === 0) return null;
 
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
-  const startItem = (currentPage - 1) * 6 + 1;
-  const endItem = Math.min(currentPage * 6, totalCount);
+  
+  // حساب النطاق بشكل ديناميكي بناءً على رقم الصفحة وحجم الصفحة
+  const startItem = (currentPage - 1) * pageSize + 1;
+  const endItem = Math.min(currentPage * pageSize, totalCount);
 
   return (
     <div className="flex items-center justify-between px-6 py-4 border-t border-gray-100">
