@@ -14,24 +14,24 @@ export const sidebarItems = [
     icon: <DashboardOutlined />,
     to: "/app/dashboard",
   },
-//   {
-//     key: "books",
-//     label: "Books",
-//     icon: <MenuBookOutlined />,
-//     to: "/app/books",
-//   },
+  {
+    key: "books",
+    label: "Books",
+    icon: <MenuBookOutlined />,
+    to: "/app/books",
+  },
    {
      key: "categories",
      label: "Categories",
      icon: <FolderOutlined />,
      to: "/app/categories",
    },
-//   {
-//     key: "users",
-//     label: "Users",
-//     icon: <PeopleOutline />,
-//     to: "/app/users",
-//   },
+  {
+    key: "users",
+    label: "Users",
+    icon: <PeopleOutline />,
+    to: "/app/users",
+  },
 //   {
 //     key: "borrow-requests",
 //     label: "Borrow Requests",
