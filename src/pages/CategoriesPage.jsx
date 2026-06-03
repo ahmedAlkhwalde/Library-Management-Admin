@@ -2,6 +2,7 @@ import { useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import FolderOpenOutlinedIcon from "@mui/icons-material/FolderOpenOutlined";
 import AppSnackbar from "../components/AppSnackbar";
+import DeleteConfirmationDialog from "../components/DeleteConfirmationDialog";
 import CategoryFiltersBar from "../features/categories/components/CategoryFiltersBar";
 import CategoryTable from "../features/categories/components/CategoryTable";
 import CategoryModal from "../features/categories/components/CategoryModal";
@@ -26,7 +27,9 @@ export default function CategoriesPage() {
   // ─── Modal state ────────────────────────────────────────────────────────────
   const [modalOpen, setModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
-
+  // ─── Delete confirmation state ───────────────────────────────────────────
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState(null);
   // ─── Snackbar state ─────────────────────────────────────────────────────────
   const [snackbar, setSnackbar] = useState({ open: false, message: "", variant: "success" });
   const openSnackbar = (message, variant = "success") =>
@@ -45,12 +48,19 @@ export default function CategoriesPage() {
   const [deletingId, setDeletingId] = useState(null);
 
   const handleDelete = (category) => {
-    if (!window.confirm(`Delete "${category.name}"?`)) return;
-    setDeletingId(category.id);
-    deleteMutation.mutate(category.id, {
+    setCategoryToDelete(category);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (!categoryToDelete) return;
+    setDeletingId(categoryToDelete.id);
+    deleteMutation.mutate(categoryToDelete.id, {
       onSuccess: () => {
         openSnackbar("Category deleted successfully.");
         setDeletingId(null);
+        setDeleteDialogOpen(false);
+        setCategoryToDelete(null);
       },
       onError: (err) => {
         const msg = err?.response?.data?.message || "Failed to delete category.";
@@ -58,6 +68,11 @@ export default function CategoriesPage() {
         setDeletingId(null);
       },
     });
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteDialogOpen(false);
+    setCategoryToDelete(null);
   };
 
   // ─── Edit ───────────────────────────────────────────────────────────────────
@@ -134,6 +149,16 @@ export default function CategoriesPage() {
         open={modalOpen}
         category={editingCategory}
         onClose={handleModalClose}
+      />
+
+      {/* ── Delete Confirmation Dialog ── */}
+      <DeleteConfirmationDialog
+        open={deleteDialogOpen}
+        title="Delete Category"
+        message={`Are you sure you want to delete "${categoryToDelete?.name}"? This action cannot be undone.`}
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+        isLoading={deletingId === categoryToDelete?.id}
       />
 
       {/* ── Snackbar ── */}

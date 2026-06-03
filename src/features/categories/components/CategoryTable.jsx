@@ -23,11 +23,12 @@ export default function CategoryTable({
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-gray-100">
+            <tr style={{ borderBottomColor: 'var(--color-border)' }} className="border-b">
               {HEADERS.map((h) => (
                 <th
                   key={h}
-                  className="px-6 py-3 text-left text-xs font-semibold text-gray-400 tracking-wider"
+                  className="px-6 py-3 text-left text-xs font-semibold tracking-wider"
+                  style={{ color: 'var(--color-grey)' }}
                 >
                   {h}
                 </th>
@@ -37,17 +38,17 @@ export default function CategoryTable({
           <tbody>
             {isLoading ? (
               Array.from({ length: 6 }).map((_, i) => (
-                <tr key={i} className="border-b border-gray-100">
+                <tr key={i} style={{ borderBottomColor: 'var(--color-border)' }} className="border-b">
                   {HEADERS.map((h) => (
                     <td key={h} className="px-6 py-4">
-                      <div className="h-4 bg-gray-100 rounded animate-pulse" />
+                      <div className="h-4 rounded animate-pulse" style={{ backgroundColor: 'var(--color-surface-90)' }} />
                     </td>
                   ))}
                 </tr>
               ))
             ) : categories.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-6 py-16 text-center text-gray-400 text-sm">
+                <td colSpan={5} className="px-6 py-16 text-center text-sm" style={{ color: 'var(--color-grey)' }}>
                   No categories found.
                 </td>
               </tr>
@@ -68,8 +69,8 @@ export default function CategoryTable({
 
       {/* Pagination */}
       {totalCount > 0 && (
-        <div className="flex items-center justify-between px-6 py-4 border-t border-gray-100">
-          <p className="text-sm text-gray-500">
+        <div className="flex items-center justify-between px-6 py-4 border-t" style={{ borderTopColor: 'var(--color-border)' }}>
+          <p className="text-sm" style={{ color: 'var(--color-grey)' }}>
             Showing {startItem} to {endItem} of {totalCount} categories
           </p>
           <div className="flex items-center gap-1">
@@ -82,11 +83,21 @@ export default function CategoryTable({
               <button
                 key={n}
                 onClick={() => onPageChange?.(n)}
-                className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
-                  n === currentPage
-                    ? "bg-indigo-600 text-white"
-                    : "text-gray-600 hover:bg-gray-100"
-                }`}
+                className="w-8 h-8 rounded-lg text-sm font-medium transition-colors"
+                style={{
+                  backgroundColor: n === currentPage ? 'var(--color-accent)' : 'transparent',
+                  color: n === currentPage ? 'var(--color-on-accent)' : 'var(--color-text)',
+                }}
+                onMouseEnter={(e) => {
+                  if (n !== currentPage) {
+                    e.currentTarget.style.backgroundColor = 'var(--color-surface-90)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (n !== currentPage) {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                  }
+                }}
               >
                 {n}
               </button>
@@ -108,7 +119,19 @@ function PaginationBtn({ label, onClick, disabled }) {
     <button
       onClick={onClick}
       disabled={disabled}
-      className="px-3 h-8 rounded-lg text-sm font-medium text-gray-600 border border-gray-200 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+      className="px-3 h-8 rounded-lg text-sm font-medium border transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+      style={{
+        borderColor: 'var(--color-border)',
+        color: 'var(--color-text)',
+      }}
+      onMouseEnter={(e) => {
+        if (!disabled) {
+          e.currentTarget.style.backgroundColor = 'var(--color-surface-90)';
+        }
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.backgroundColor = 'transparent';
+      }}
     >
       {label}
     </button>

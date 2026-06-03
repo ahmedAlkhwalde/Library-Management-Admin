@@ -59,11 +59,25 @@ export default function CategoryTableRow({ category, onEdit, onDelete, isDeletin
           <button
             onClick={() => onDelete?.(category)}
             disabled={isDeleting}
-            className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 hover:border-red-300 hover:bg-red-50 text-gray-400 hover:text-red-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-8 h-8 flex items-center justify-center rounded-lg border transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              borderColor: 'var(--color-border)',
+              color: 'var(--color-grey)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = 'var(--color-danger)';
+              e.currentTarget.style.backgroundColor = 'var(--color-danger-soft)';
+              e.currentTarget.style.color = 'var(--color-danger)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = 'var(--color-border)';
+              e.currentTarget.style.backgroundColor = 'transparent';
+              e.currentTarget.style.color = 'var(--color-grey)';
+            }}
             aria-label="Delete category"
           >
             {isDeleting ? (
-              <div className="w-4 h-4 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />
+              <div className="w-4 h-4 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: 'var(--color-danger)', borderTopColor: 'transparent' }} />
             ) : (
               <DeleteOutlineIcon className="!w-4 !h-4" />
             )}
