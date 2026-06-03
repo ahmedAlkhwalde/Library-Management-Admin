@@ -1,6 +1,6 @@
 import CategoryTableRow from "./CategoryTableRow";
 
-const HEADERS = ["CATEGORY", "BOOKS", "CREATED DATE", "STATUS", "ACTIONS"];
+const HEADERS = ["CATEGORY", "BOOKS", "CREATED DATE", "ACTIONS"];
 
 export default function CategoryTable({
   categories = [],
@@ -11,7 +11,6 @@ export default function CategoryTable({
   onPageChange,
   onEdit,
   onDelete,
-  deletingId,
 }) {
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
   const startItem = (currentPage - 1) * 6 + 1;
@@ -48,7 +47,7 @@ export default function CategoryTable({
               ))
             ) : categories.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-6 py-16 text-center text-sm" style={{ color: 'var(--color-grey)' }}>
+                <td colSpan={4} className="px-6 py-16 text-center text-sm" style={{ color: 'var(--color-grey)' }}>
                   No categories found.
                 </td>
               </tr>
@@ -59,7 +58,6 @@ export default function CategoryTable({
                   category={cat}
                   onEdit={onEdit}
                   onDelete={onDelete}
-                  isDeleting={deletingId === cat.id}
                 />
               ))
             )}

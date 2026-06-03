@@ -4,7 +4,7 @@ import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNone
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { markAllNotificationsRead } from "../features/dashboard/store/dashboardSlice";
 
-export default function TopBar() {
+export default function TopBar({ showSearch = true }) {
   const dispatch = useDispatch();
   const notificationsCount = useSelector((s) => s.dashboard?.notificationsCount ?? 0);
   const notifications = useSelector((s) => s.dashboard?.notifications ?? []);
@@ -24,23 +24,27 @@ export default function TopBar() {
   return (
     <div className="hidden md:flex items-center justify-between px-6 py-3 bg-white border-b border-gray-200 shrink-0">
       {/* Search */}
-      <div className="relative w-72">
-        <input
-          type="text"
-          placeholder="Search books, users, categories…"
-          className="w-full pl-9 pr-16 py-2 rounded-lg border border-gray-200 text-sm text-gray-600 placeholder-gray-400 focus:outline-none focus:border-indigo-400 transition-colors"
-        />
-        <svg
-          className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
-          fill="none" stroke="currentColor" viewBox="0 0 24 24"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-            d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
-        </svg>
-        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-300 font-mono">
-          Ctrl+K
-        </span>
-      </div>
+      {showSearch ? (
+        <div className="relative w-72">
+          <input
+            type="text"
+            placeholder="Search books, users, categories…"
+            className="w-full pl-9 pr-16 py-2 rounded-lg border border-gray-200 text-sm text-gray-600 placeholder-gray-400 focus:outline-none focus:border-indigo-400 transition-colors"
+          />
+          <svg
+            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+            fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
+          </svg>
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-300 font-mono">
+            Ctrl+K
+          </span>
+        </div>
+      ) : (
+        <div />
+      )}
 
       {/* Right side */}
       <div className="flex items-center gap-3 relative">
