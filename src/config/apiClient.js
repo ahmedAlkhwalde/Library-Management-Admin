@@ -2,7 +2,7 @@ import axios from "axios";
 
 const apiClient = axios.create({
   // تم اعتماد 127.0.0.1 لضمان استقرار الاتصال في مختلف بيئات التشغيل
-  baseURL: "http://127.0.0.1:8000/api",
+  baseURL: "http://192.168.1.4:8000/api",
   timeout: 10000,
   headers: {
     Accept: "application/json",

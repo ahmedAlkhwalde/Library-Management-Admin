@@ -19,7 +19,7 @@ function PaginationBtn({ label, onClick, disabled }) {
 }
 
 export default function ActiveBorrowTable() {
-  const [selectedStatus, setSelectedStatus] = useState("all");
+  const [selectedStatus, setSelectedStatus] = useState("borrowed,overdue");
   const STATUS_OPTIONS = [
     { label: "All Status", value: "borrowed,overdue" },
     { label: "Borrowed", value: "borrowed" },
