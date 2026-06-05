@@ -5,6 +5,7 @@ import {
   PeopleOutline,
   LibraryBooksOutlined,
   LogoutOutlined,
+  PersonOutline
 } from "@mui/icons-material";
 
 export const sidebarItems = [
@@ -32,12 +33,18 @@ export const sidebarItems = [
     icon: <PeopleOutline />,
     to: "/app/users",
   },
-//   {
-//     key: "borrow-requests",
-//     label: "Borrow Requests",
-//     icon: <LibraryBooksOutlined />,
-//     to: "/app/borrow-requests",
-//   },
+  {
+    key: "borrow-requests",
+    label: "Borrow Requests",
+    icon: <LibraryBooksOutlined />,
+    to: "/app/borrow-requests",
+  },
+  {
+  key: "profile",
+  label: "Profile",
+  icon: <PersonOutline />,
+  to: "/app/profile",
+},
   {
     key: "logout",
     label: "Logout",
