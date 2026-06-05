@@ -4,14 +4,13 @@ import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNone
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { markAllNotificationsRead } from "../features/dashboard/store/dashboardSlice";
 
-export default function TopBar() {
-  const userData = useSelector((state) => state.auth.user);
+export default function TopBar({ showSearch = true }) {
   const dispatch = useDispatch();
+  const userData = useSelector((state) => state.auth.user);
   const notificationsCount = useSelector(
     (s) => s.dashboard?.notificationsCount ?? 0,
   );
   const notifications = useSelector((s) => s.dashboard?.notifications ?? []);
-  const user = useSelector((s) => s.auth?.user);
 
   const [notifOpen, setNotifOpen] = useState(false);
 
@@ -22,34 +21,37 @@ export default function TopBar() {
 
   const displayName = userData?.name || "Admin";
   const displayRole = userData?.role || "Administrator";
-  const initial = displayName.charAt(0).toUpperCase();
 
   return (
     <div className="hidden md:flex items-center justify-between px-6 py-3 bg-white border-b border-gray-200 shrink-0">
-      {/* Search */}
-      <div className="relative w-72">
-        <input
-          type="text"
-          placeholder="Search books, users, categories…"
-          className="w-full pl-9 pr-16 py-2 rounded-lg border border-gray-200 text-sm text-gray-600 placeholder-gray-400 focus:outline-none focus:border-indigo-400 transition-colors"
-        />
-        <svg
-          className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"
+      {/* Search Area */}
+      {showSearch ? (
+        <div className="relative w-72">
+          <input
+            type="text"
+            placeholder="Search books, users, categories…"
+            className="w-full pl-9 pr-16 py-2 rounded-lg border border-gray-200 text-sm text-gray-600 placeholder-gray-400 focus:outline-none focus:border-indigo-400 transition-colors"
           />
-        </svg>
-        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-300 font-mono">
-          Ctrl+K
-        </span>
-      </div>
+          <svg
+            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"
+            />
+          </svg>
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-300 font-mono">
+            Ctrl+K
+          </span>
+        </div>
+      ) : (
+        <div />
+      )}
 
       {/* Right side */}
       <div className="flex items-center gap-3 relative">
@@ -91,7 +93,9 @@ export default function TopBar() {
                     notifications.map((n) => (
                       <li
                         key={n.id}
-                        className={`px-4 py-3 text-xs text-gray-600 leading-relaxed ${n.read ? "opacity-50" : "bg-indigo-50/40"}`}
+                        className={`px-4 py-3 text-xs text-gray-600 leading-relaxed ${
+                          n.read ? "opacity-50" : "bg-indigo-50/40"
+                        }`}
                       >
                         {n.message}
                       </li>
@@ -105,29 +109,27 @@ export default function TopBar() {
 
         {/* Admin info */}
         <div className="flex items-center gap-2 cursor-pointer group">
-          <div className=" w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white text-sm font-semibold shrink-0">
+          <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white text-sm font-semibold shrink-0 overflow-hidden">
             {userData?.image ? (
               <img
-                className="w-8 h-8 rounded-full object-cover bg-indigo-600 shrink-0"
+                className="w-8 h-8 rounded-full object-cover"
                 src={userData.image}
                 alt="Profile"
               />
             ) : (
-              <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white text-sm font-semibold shrink-0">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="w-5 h-5"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </div>
-            )}{" "}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            )}
           </div>
           <div>
             <p className="text-sm font-semibold text-gray-800 leading-none">
