@@ -11,6 +11,9 @@ export default function MainLayout() {
   const navigate = useNavigate();
   const snackbar = location.state?.snackbar;
 
+  // Hide search bar on categories page
+  const isCategories = location.pathname.includes('/categories');
+
   const handleCloseSnackbar = () => {
     if (!snackbar) return;
     navigate(location.pathname, { replace: true, state: null });
@@ -39,7 +42,7 @@ export default function MainLayout() {
         </header>
 
         {/* Shared desktop top bar — search + notifications + admin */}
-        <TopBar />
+        <TopBar showSearch={!isCategories} />
 
         {/* Page content */}
         <main className="flex-1 overflow-y-auto">

@@ -3,6 +3,18 @@ import apiClient from "../../../config/apiClient";
 
 // ─── API functions ─────────────────────────────────────────────────────────────
 
+export const fetchDashboardStats = async () => {
+  const response = await apiClient.get("/statistics");
+  return response.data?.data || {
+    total_books: 0,
+    total_users: 0,
+    borrowed_books: 0,
+    available_books: 0,
+    pending_requests: 0,
+    overdue_borrows: 0,
+    banned_users: 0,
+  };
+};
 
 export const fetchBorrowRequests = async () => {
   const response = await apiClient.get("/borrows", {
@@ -27,7 +39,11 @@ export const confirmBorrowRequest = async (borrowId) => {
 
 // ─── React Query hooks ─────────────────────────────────────────────────────────
 
-
+export const useDashboardStatsQuery = () =>
+  useQuery({
+    queryKey: ["dashboard", "stats"],
+    queryFn: () => fetchDashboardStats(),
+  });
 
 export const useBorrowRequestsQuery = () =>
   useQuery({

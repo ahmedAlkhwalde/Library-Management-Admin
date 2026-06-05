@@ -10,6 +10,7 @@ import BoltOutlinedIcon from "@mui/icons-material/BoltOutlined";
 
 // React Query services
 import {
+  useDashboardStatsQuery,
   useBorrowRequestsQuery,
   useLateBorrowingsQuery,
   useConfirmBorrowMutation,
@@ -24,10 +25,10 @@ import AppSnackbar from "../components/AppSnackbar";
 
 // ─── Mock data (shown when API is unreachable) ────────────────────────────────
 const MOCK_STATS = {
-  totalBooks: 1245,
-  availableBooks: 824,
-  borrowedBooks: 403,
-  totalUsers: 1156,
+  total_books: 1245,
+  available_books: 824,
+  borrowed_books: 403,
+  total_users: 1156,
 };
 
 const MOCK_BORROW_REQUESTS = Array.from({ length: 6 }, (_, i) => ({
@@ -49,7 +50,7 @@ const MOCK_LATE_BORROWINGS = Array.from({ length: 6 }, (_, i) => ({
 // ─── Stat card definitions ────────────────────────────────────────────────────
 const STAT_CARDS = [
   {
-    key: "totalBooks",
+    key: "total_books",
     label: "Total Books",
     icon: MenuBookOutlinedIcon,
     iconBg: "bg-blue-50",
@@ -58,7 +59,7 @@ const STAT_CARDS = [
     trendUp: true,
   },
   {
-    key: "availableBooks",
+    key: "available_books",
     label: "Available Books",
     icon: CheckCircleOutlineIcon,
     iconBg: "bg-emerald-50",
@@ -67,7 +68,7 @@ const STAT_CARDS = [
     trendUp: true,
   },
   {
-    key: "borrowedBooks",
+    key: "borrowed_books",
     label: "Borrowed Books",
     icon: AutoStoriesOutlinedIcon,
     iconBg: "bg-orange-50",
@@ -76,7 +77,7 @@ const STAT_CARDS = [
     trendUp: false,
   },
   {
-    key: "totalUsers",
+    key: "total_users",
     label: "Total Users",
     icon: PeopleAltOutlinedIcon,
     iconBg: "bg-indigo-50",
@@ -96,10 +97,13 @@ export default function DashboardPage() {
     setSnackbar({ open: true, message, variant });
 
   // ── React Query ─────────────────────────────────────────────────────────────
+  const statsQuery = useDashboardStatsQuery();
   const borrowQuery = useBorrowRequestsQuery();
   const lateQuery = useLateBorrowingsQuery();
   const confirmMutation = useConfirmBorrowMutation();
 
+  // Use real stats from API or fallback to mock data
+  const dashboardStats = statsQuery.isError ? MOCK_STATS : (statsQuery.data || MOCK_STATS);
   const borrowRequests = Array.isArray(borrowQuery.data) ? borrowQuery.data : (borrowQuery.data?.data ?? (borrowQuery.isError ? MOCK_BORROW_REQUESTS : []));
   const lateBorrowings = Array.isArray(lateQuery.data) ? lateQuery.data : (lateQuery.data?.data ?? (lateQuery.isError ? MOCK_LATE_BORROWINGS : []));
 
@@ -127,7 +131,7 @@ export default function DashboardPage() {
         {/* Stats row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
           {STAT_CARDS.map(({ key, ...card }) => (
-            <StatsCard key={key} value={MOCK_STATS[key]} {...card} />
+            <StatsCard key={key} value={dashboardStats[key] ?? 0} isLoading={statsQuery.isLoading} {...card} />
           ))}
         </div>
 
