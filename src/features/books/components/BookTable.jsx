@@ -1,17 +1,20 @@
-// BookTable.jsx
 import { useState } from "react";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import BookDetailsModal from "./BookDetailsModal";
 import BooksModal from "./BooksModal";
+import BooksFilterBar from "./BooksFilterBar";
+import TuneIcon from "@mui/icons-material/Tune";
 
 export default function BookTable({
   books = [],
   isLoading,
   onEdit,
   onDelete,
-  onUpdateBook, // if you need separate update handler
+  onUpdateBook,
+  filters,
+  onFilterChange,
 }) {
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -51,8 +54,67 @@ const [imgError, setImgError] = useState(false);
 
   return (
     <>
-      <div className="overflow-hidden bg-white rounded-2xl border border-gray-200">
-        <div className="overflow-x-auto">
+        <div className="overflow-hidden bg-white rounded-2xl border border-gray-200 shadow-sm"> 
+          <div className="flex flex-col gap-4 p-5 border-b border-gray-200 bg-gray-50">
+
+  <div className="flex flex-wrap items-center justify-between gap-4">
+
+   <div className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+          <TuneIcon className="!w-4 !h-4" />
+          Filters
+        </div>
+
+    <BooksFilterBar
+      filters={filters}
+      onFilterChange={onFilterChange}
+    />
+
+  </div>
+
+  {(filters.category_id || filters.status !== "all") && (
+    <div className="flex flex-wrap gap-2">
+
+      {filters.category_id && (
+        <span
+          className="
+            px-3
+            py-1
+            rounded-full
+            text-xs
+            font-medium
+            bg-blue-50
+            text-blue-700
+            border
+            border-blue-200
+          "
+        >
+          Category Selected
+        </span>
+      )}
+
+      {filters.status !== "all" && (
+        <span
+          className="
+            px-3
+            py-1
+            rounded-full
+            text-xs
+            font-medium
+            bg-green-50
+            text-green-700
+            border
+            border-green-200
+          "
+        >
+          {filters.status}
+        </span>
+      )}
+
+    </div>
+  )}
+
+   </div>
+         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-gray-200 bg-gray-50">

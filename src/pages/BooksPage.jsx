@@ -7,9 +7,17 @@ import BookPagination from "../features/books/components/BookPagination";
 
 function BooksPage() {
   const [page, setPage] = useState(1);
-  const { data, isLoading, error } = useBooksQuery(page);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
+  const [filters, setFilters] = useState({ category_id: "", status: "all" });
+  
+  const { data, isLoading,error } = useBooksQuery(
+    page,
+    filters.category_id || null,
+    filters.status
+  );
+  
+
 
   const createBookMutation = useCreateBookMutation({
   onSuccess: () => {
@@ -61,7 +69,12 @@ const handleDeleteClick = (book) => {
   deleteBookMutation.mutate(book.id);
 };
 
-  if (error) {
+const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
+    setPage(1); 
+  };
+ 
+if (error) {
     return (
       <div>
         {JSON.stringify(error.response?.data)}
@@ -73,12 +86,13 @@ const handleDeleteClick = (book) => {
     <div className="min-h-screen bg-gray-50">
       <main className="p-6 max-w-7xl mx-auto">
         <BooksHeader onAddBook={() => setIsModalOpen(true)} />
-
         <BookTable
             books={data?.books || []}
             isLoading={isLoading}
             onEdit={handleEditBook}
             onDelete={handleDeleteClick}
+            filters={filters}
+            onFilterChange={handleFilterChange}
         />
 
         <BookPagination
