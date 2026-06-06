@@ -7,16 +7,19 @@ import { markAllNotificationsRead } from "../features/dashboard/store/dashboardS
 import { searchBooks } from "../features/search/searchService";
 import BookDetailsModal from "../features/books/components/BookDetailsModal";
 
-export default function TopBar() {
+export default function TopBar({ showSearch = true }) {
   const dispatch = useDispatch();
+  
+  // جلب بيانات المستخدم والحساب من فرع main
+  const userData = useSelector((state) => state.auth.user);
   const notificationsCount = useSelector(
-    (s) => s.dashboard?.notificationsCount ?? 0
+    (s) => s.dashboard?.notificationsCount ?? 0,
   );
   const notifications = useSelector((s) => s.dashboard?.notifications ?? []);
-  const user = useSelector((s) => s.auth?.user);
 
   const [notifOpen, setNotifOpen] = useState(false);
 
+  // حالات البحث والكتب من فرع searchBooks
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -27,8 +30,9 @@ export default function TopBar() {
 
   const searchRef = useRef(null);
 
-  const displayName = user?.name || "Admin";
-  const displayRole = user?.role || "Administrator";
+  // إعداد بيانات العرض بناءً على userData المستقرة من سكريد الـ main
+  const displayName = userData?.name || "Admin";
+  const displayRole = userData?.role || "Administrator";
   const initial = displayName.charAt(0).toUpperCase();
 
   const handleBellClick = () => {
@@ -48,6 +52,7 @@ export default function TopBar() {
     setSearchOpen(false);
   };
 
+  // مراقبة الضغط الخارجي وزر الأسكيب لإغلاق النوافذ المنسدلة
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -71,6 +76,7 @@ export default function TopBar() {
     };
   }, []);
 
+  // محرك البحث الفوري عن الكتب مع Debounce بمقدار 300ms
   useEffect(() => {
     const term = query.trim();
 
@@ -111,107 +117,116 @@ export default function TopBar() {
   return (
     <>
       <div className="hidden md:flex items-center justify-between px-6 py-3 bg-white border-b border-gray-200 shrink-0">
-        <div ref={searchRef} className="relative w-72">
-          <div className="relative">
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onFocus={() => {
-                if (query.trim() && results.length > 0) {
-                  setSearchOpen(true);
-                }
-              }}
-              placeholder="Search books, authors, categories..."
-              className="w-full pl-9 pr-16 py-2 rounded-lg border border-gray-200 text-sm text-gray-600 placeholder-gray-400 focus:outline-none focus:border-indigo-400 transition-colors bg-white"
-            />
+        
+        {/* منطقة البحث الديناميكية المحمية بشريط showSearch */}
+        {showSearch ? (
+          <div ref={searchRef} className="relative w-72">
+            <div className="relative">
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onFocus={() => {
+                  if (query.trim() && results.length > 0) {
+                    setSearchOpen(true);
+                  }
+                }}
+                placeholder="Search books, authors, categories..."
+                className="w-full pl-9 pr-16 py-2 rounded-lg border border-gray-200 text-sm text-gray-600 placeholder-gray-400 focus:outline-none focus:border-indigo-400 transition-colors bg-white"
+              />
 
-            <SearchIcon className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 !w-4 !h-4 text-gray-400" />
+              <SearchIcon className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 !w-4 !h-4 text-gray-400" />
 
-            {query ? (
-              <button
-                type="button"
-                onClick={clearSearch}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-400 hover:text-gray-600 font-medium"
-              >
-                Clear
-              </button>
-            ) : (
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-300 font-mono">
-                Ctrl+K
-              </span>
-            )}
-          </div>
-
-          {searchOpen && (
-            <div className="absolute left-0 top-12 w-full overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl z-50">
-              <div className="border-b border-gray-100 px-4 py-3">
-                <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">
-                  Search results
-                </p>
-              </div>
-
-              {isSearching ? (
-                <div className="px-4 py-5 text-sm text-gray-500">
-                  Searching...
-                </div>
-              ) : results.length === 0 ? (
-                <div className="px-4 py-5 text-sm text-gray-400">
-                  No books found
-                </div>
+              {query ? (
+                <button
+                  type="button"
+                  onClick={clearSearch}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-400 hover:text-gray-600 font-medium"
+                >
+                  Clear
+                </button>
               ) : (
-                <div className="max-h-80 overflow-y-auto">
-                  {results.map((book) => (
-                    <button
-                      key={book.id}
-                      type="button"
-                      className="w-full px-4 py-3 flex items-start gap-3 text-left hover:bg-gray-50 transition-colors border-b border-gray-50 last:border-b-0"
-                      onClick={() => handleSelectBook(book)}
-                    >
-                      <img
-                        src={book.image || "https://picsum.photos/id/24/120/160"}
-                        alt={book.title}
-                        className="w-10 h-14 rounded-lg object-cover border border-gray-200 shrink-0"
-                      />
-
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm font-semibold text-gray-800 truncate">
-                          {book.title}
-                        </p>
-
-                        <p className="text-xs text-gray-500 truncate mt-0.5">
-                          {book.author}
-                        </p>
-
-                        <div className="mt-2 flex flex-wrap items-center gap-2">
-                          {book.category_name && (
-                            <span className="inline-flex items-center rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] font-medium text-indigo-700 border border-indigo-100">
-                              {book.category_name}
-                            </span>
-                          )}
-
-                          <span
-                            className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-medium border ${
-                              book.status === "available"
-                                ? "bg-green-50 text-green-700 border-green-100"
-                                : "bg-red-50 text-red-700 border-red-100"
-                            }`}
-                          >
-                            {book.status === "available" ? "Available" : "Unavailable"}
-                          </span>
-                        </div>
-                      </div>
-                    </button>
-                  ))}
-                </div>
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-300 font-mono">
+                  Ctrl+K
+                </span>
               )}
             </div>
-          )}
-        </div>
 
+            {/* قائمة نتائج البحث المنسدلة للكتب */}
+            {searchOpen && (
+              <div className="absolute left-0 top-12 w-full overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl z-50">
+                <div className="border-b border-gray-100 px-4 py-3">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                    Search results
+                  </p>
+                </div>
+
+                {isSearching ? (
+                  <div className="px-4 py-5 text-sm text-gray-500">
+                    Searching...
+                  </div>
+                ) : results.length === 0 ? (
+                  <div className="px-4 py-5 text-sm text-gray-400">
+                    No books found
+                  </div>
+                ) : (
+                  <div className="max-h-80 overflow-y-auto">
+                    {results.map((book) => (
+                      <button
+                        key={book.id}
+                        type="button"
+                        className="w-full px-4 py-3 flex items-start gap-3 text-left hover:bg-gray-50 transition-colors border-b border-gray-50 last:border-b-0"
+                        onClick={() => handleSelectBook(book)}
+                      >
+                        <img
+                          src={book.image || "https://picsum.photos/id/24/120/160"}
+                          alt={book.title}
+                          className="w-10 h-14 rounded-lg object-cover border border-gray-200 shrink-0"
+                        />
+
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-semibold text-gray-800 truncate">
+                            {book.title}
+                          </p>
+
+                          <p className="text-xs text-gray-500 truncate mt-0.5">
+                            {book.author}
+                          </p>
+
+                          <div className="mt-2 flex flex-wrap items-center gap-2">
+                            {book.category_name && (
+                              <span className="inline-flex items-center rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] font-medium text-indigo-700 border border-indigo-100">
+                                {book.category_name}
+                              </span>
+                            )}
+
+                            <span
+                              className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-medium border ${
+                                book.status === "available"
+                                  ? "bg-green-50 text-green-700 border-green-100"
+                                  : "bg-red-50 text-red-700 border-red-100"
+                              }`}
+                            >
+                              {book.status === "available" ? "Available" : "Unavailable"}
+                            </span>
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        ) : (
+          <div />
+        )}
+
+        {/* الجانب الأيمن: الإشعارات ومعلومات الأدمن الجمالية المتكاملة */}
         <div className="flex items-center gap-3 relative">
           <div className="relative">
             <button
+              type="button"
               onClick={handleBellClick}
               className="relative w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
             >
@@ -261,9 +276,18 @@ export default function TopBar() {
             )}
           </div>
 
+          {/* الملف الشخصي للأدمن مع الصورة الشخصية الحية أو رمز svg الاحتياطي */}
           <div className="flex items-center gap-2 cursor-pointer group">
-            <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white text-sm font-semibold shrink-0">
-              {initial}
+            <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white text-sm font-semibold shrink-0 overflow-hidden">
+              {userData?.image ? (
+                <img
+                  className="w-8 h-8 rounded-full object-cover"
+                  src={userData.image}
+                  alt="Profile"
+                />
+              ) : (
+                initial
+              )}
             </div>
             <div>
               <p className="text-sm font-semibold text-gray-800 leading-none">
@@ -276,6 +300,7 @@ export default function TopBar() {
         </div>
       </div>
 
+      {/* مودال تفاصيل الكتاب المستورد للفرع */}
       <BookDetailsModal
         open={bookModalOpen}
         onClose={() => setBookModalOpen(false)}

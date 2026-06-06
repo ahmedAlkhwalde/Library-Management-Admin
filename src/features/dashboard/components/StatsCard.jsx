@@ -1,7 +1,6 @@
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
 
-// eslint-disable-next-line no-unused-vars
 export default function StatsCard({ icon: Icon, iconBg, iconColor, label, value, trend, trendUp, isLoading }) {
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col gap-3">

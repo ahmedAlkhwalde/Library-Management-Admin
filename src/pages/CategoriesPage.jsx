@@ -2,7 +2,7 @@ import { useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import FolderOpenOutlinedIcon from "@mui/icons-material/FolderOpenOutlined";
 import AppSnackbar from "../components/AppSnackbar";
-import CategoryFiltersBar from "../features/categories/components/CategoryFiltersBar";
+import DeleteConfirmationDialog from "../components/DeleteConfirmationDialog";
 import CategoryTable from "../features/categories/components/CategoryTable";
 import CategoryModal from "../features/categories/components/CategoryModal";
 import { useCategoriesQuery, useDeleteCategoryMutation } from "../features/categories/services/categoriesService";
@@ -18,46 +18,51 @@ const MOCK_CATEGORIES = [
 ];
 
 export default function CategoriesPage() {
-  // ─── Filters state ──────────────────────────────────────────────────────────
-  const [search, setSearch] = useState("");
-  const [status, setStatus] = useState("");
+  // ─── State ──────────────────────────────────────────────────────────────────
   const [currentPage, setCurrentPage] = useState(1);
-
-  // ─── Modal state ────────────────────────────────────────────────────────────
   const [modalOpen, setModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
-
-  // ─── Snackbar state ─────────────────────────────────────────────────────────
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState(null);
   const [snackbar, setSnackbar] = useState({ open: false, message: "", variant: "success" });
+
   const openSnackbar = (message, variant = "success") =>
     setSnackbar({ open: true, message, variant });
 
   // ─── Data fetching ──────────────────────────────────────────────────────────
-  const { data, isLoading, isError } = useCategoriesQuery({ page: currentPage, search, status });
+  const { data, isLoading, isError } = useCategoriesQuery({ page: currentPage });
 
   // Use real data if available, otherwise fall back to mock
-  const categories = data?.data ?? (isError ? applyLocalFilters(MOCK_CATEGORIES, search, status) : []);
+  const categories = data?.data ?? (isError ? MOCK_CATEGORIES : []);
   const totalCount = data?.total ?? (isError ? categories.length : 0);
   const totalPages = data?.last_page ?? (isError ? Math.ceil(totalCount / 6) : 1);
 
   // ─── Delete ─────────────────────────────────────────────────────────────────
   const deleteMutation = useDeleteCategoryMutation();
-  const [deletingId, setDeletingId] = useState(null);
 
   const handleDelete = (category) => {
-    if (!window.confirm(`Delete "${category.name}"?`)) return;
-    setDeletingId(category.id);
-    deleteMutation.mutate(category.id, {
+    setCategoryToDelete(category);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (!categoryToDelete) return;
+    deleteMutation.mutate(categoryToDelete.id, {
       onSuccess: () => {
         openSnackbar("Category deleted successfully.");
-        setDeletingId(null);
+        setDeleteDialogOpen(false);
+        setCategoryToDelete(null);
       },
       onError: (err) => {
         const msg = err?.response?.data?.message || "Failed to delete category.";
         openSnackbar(msg, "error");
-        setDeletingId(null);
       },
     });
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteDialogOpen(false);
+    setCategoryToDelete(null);
   };
 
   // ─── Edit ───────────────────────────────────────────────────────────────────
@@ -105,15 +110,6 @@ export default function CategoriesPage() {
 
         {/* Card */}
         <div className="bg-white rounded-2xl border border-gray-200 shadow-sm">
-          {/* Filters */}
-          <div className="px-6 pt-5 pb-4 border-b border-gray-100">
-            <CategoryFiltersBar
-              onSearchChange={(v) => { setSearch(v); setCurrentPage(1); }}
-              onStatusChange={(v) => { setStatus(v === "All Status" ? "" : v.toLowerCase()); setCurrentPage(1); }}
-              onCategoryChange={() => setCurrentPage(1)}
-            />
-          </div>
-
           {/* Table */}
           <CategoryTable
             categories={categories}
@@ -124,7 +120,6 @@ export default function CategoriesPage() {
             onPageChange={setCurrentPage}
             onEdit={handleEdit}
             onDelete={handleDelete}
-            deletingId={deletingId}
           />
         </div>
       </main>
@@ -134,6 +129,16 @@ export default function CategoriesPage() {
         open={modalOpen}
         category={editingCategory}
         onClose={handleModalClose}
+      />
+
+      {/* ── Delete Confirmation Dialog ── */}
+      <DeleteConfirmationDialog
+        open={deleteDialogOpen}
+        title="Delete Category"
+        message={`Are you sure you want to delete "${categoryToDelete?.name}"? This action cannot be undone.`}
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+        isLoading={deleteMutation.isPending}
       />
 
       {/* ── Snackbar ── */}
@@ -147,14 +152,4 @@ export default function CategoriesPage() {
   );
 }
 
-// Applies search + status filters locally on mock data
-function applyLocalFilters(categories, search, status) {
-  return categories.filter((c) => {
-    const matchesSearch =
-      !search ||
-      c.name.toLowerCase().includes(search.toLowerCase()) ||
-      c.description.toLowerCase().includes(search.toLowerCase());
-    const matchesStatus = !status || c.status === status;
-    return matchesSearch && matchesStatus;
-  });
-}
+

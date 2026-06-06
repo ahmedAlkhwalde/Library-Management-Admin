@@ -4,7 +4,7 @@ import { useCreateCategoryMutation, useUpdateCategoryMutation } from "../service
 
 export default function CategoryModal({ open, category, onClose, onSuccess, onError }) {
   const isEditing = !!category;
-  const [values, setValues] = useState({ name: "", description: "", status: "active" });
+  const [values, setValues] = useState({ name: "", description: "" });
   const createMutation = useCreateCategoryMutation();
   const updateMutation = useUpdateCategoryMutation();
   const isPending = createMutation.isPending || updateMutation.isPending;
@@ -12,8 +12,8 @@ export default function CategoryModal({ open, category, onClose, onSuccess, onEr
   useLayoutEffect(() => {
     if (open) {
       setValues(category
-        ? { name: category.name ?? "", description: category.description ?? "", status: category.status ?? "active" }
-        : { name: "", description: "", status: "active" }
+        ? { name: category.name ?? "", description: category.description ?? "" }
+        : { name: "", description: "" }
       );
     }
   }, [category, open]);
@@ -55,13 +55,6 @@ export default function CategoryModal({ open, category, onClose, onSuccess, onEr
               <textarea name="description" value={values.description} onChange={handleChange} rows={3}
                 placeholder="Brief description of the category…"
                 className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border-indigo-400 transition-colors resize-none" />
-            </Field>
-            <Field label="Status">
-              <select name="status" value={values.status} onChange={handleChange}
-                className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm text-gray-700 focus:outline-none focus:border-indigo-400 transition-colors">
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
             </Field>
           </div>
 
