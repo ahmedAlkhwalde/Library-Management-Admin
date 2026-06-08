@@ -20,16 +20,31 @@ export const fetchBorrowRequests = async () => {
   const response = await apiClient.get("/borrows", {
     params: { status: "pending" }
   });
-  // API returns an array directly or wrapped in a data property
   return Array.isArray(response.data) ? response.data : (response.data?.data || []);
 };
 
-export const fetchLateBorrowings = async () => {
+export const fetchActiveBorrows = async () => {
   const response = await apiClient.get("/borrows", {
-    params: { status: "borrowed" }
+    params: { status: "borrowed", page: 1 }
   });
-  // API returns an array directly or wrapped in a data property
-  return Array.isArray(response.data) ? response.data : (response.data?.data || []);
+  // shape: { data: { borrows: [...], pagination: {...} } }
+  const borrows = response.data?.data?.borrows;
+  if (Array.isArray(borrows)) return borrows;
+  // fallback: flat array
+  if (Array.isArray(response.data?.data)) return response.data.data;
+  if (Array.isArray(response.data)) return response.data;
+  return [];
+};
+
+export const fetchOverdueBorrows = async () => {
+  const response = await apiClient.get("/borrows", {
+    params: { status: "overdue", page: 1 }
+  });
+  const borrows = response.data?.data?.borrows;
+  if (Array.isArray(borrows)) return borrows;
+  if (Array.isArray(response.data?.data)) return response.data.data;
+  if (Array.isArray(response.data)) return response.data;
+  return [];
 };
 
 export const confirmBorrowRequest = async (borrowId) => {
@@ -51,10 +66,16 @@ export const useBorrowRequestsQuery = () =>
     queryFn: () => fetchBorrowRequests(),
   });
 
-export const useLateBorrowingsQuery = () =>
+export const useActiveBorrowsQuery = () =>
   useQuery({
-    queryKey: ["borrow-requests", "late"],
-    queryFn: () => fetchLateBorrowings(),
+    queryKey: ["dashboard-borrows", "borrowed"],
+    queryFn: () => fetchActiveBorrows(),
+  });
+
+export const useOverdueBorrowsQuery = () =>
+  useQuery({
+    queryKey: ["dashboard-borrows", "overdue"],
+    queryFn: () => fetchOverdueBorrows(),
   });
 
 export const useConfirmBorrowMutation = (options = {}) => {
@@ -62,22 +83,15 @@ export const useConfirmBorrowMutation = (options = {}) => {
   return useMutation({
     mutationFn: confirmBorrowRequest,
     onMutate: async (id) => {
-      // Cancel ongoing queries
       await queryClient.cancelQueries({ queryKey: ["borrow-requests"] });
-      
-      // Get previous data
       const previousBorrowData = queryClient.getQueryData(["borrow-requests", "pending"]);
-      
-      // Optimistically update borrow requests
       queryClient.setQueryData(["borrow-requests", "pending"], (old) => ({
         ...old,
         data: (old?.data || []).filter((req) => req.id !== id),
       }));
-      
       return { previousBorrowData };
     },
     onError: (err, id, context) => {
-      // Rollback on error
       queryClient.setQueryData(["borrow-requests", "pending"], context.previousBorrowData);
     },
     onSuccess: () => {
