@@ -59,8 +59,8 @@ const [snackbar, setSnackbar] = useState({
 
   const handleSave = () => {
     const data = new FormData();
-    if (formData.name !== originalData.name) data.append("name", formData.name);
-    if (formData.email !== originalData.email) data.append("email", formData.email);
+
+    data.append("name", formData.name);
     if (formData.phone !== originalData.phone) data.append("mobile", formData.phone);
     if (formData.image instanceof File) data.append("image", formData.image);
 

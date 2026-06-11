@@ -156,9 +156,13 @@ export default function ActiveBorrowTable() {
                       className="w-10 h-10 rounded-full object-cover border border-gray-200 bg-gray-100"
                       alt={item.user?.name || "User"}
                     />{" "}
-                    <p className="font-medium text-gray-900">
-                      {item.user.name}
-                    </p>
+                    <div className="flex-col">
+                      <p className="font-medium text-gray-900">
+                        {item.user.name}
+                      </p>
+                      <p className="text-xs text-gray-400">{item.user.email}</p>
+                    </div>
+                    
                   </td>
                   <td className="px-6 py-4 text-gray-700 truncate max-w-[150px]">
                     {item.book.title}
