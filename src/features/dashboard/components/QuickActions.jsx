@@ -10,7 +10,7 @@ const ACTIONS = [
     iconBg: "bg-emerald-500",
     label: "Add Book",
     description: "Add a new book to the library",
-    to: "/app/books/new",
+    to: "/app/books",
   },
   {
     icon: FolderOpenOutlinedIcon,
