@@ -58,14 +58,28 @@ const [snackbar, setSnackbar] = useState({
   }, [user]);
 
   const handleSave = () => {
-    const data = new FormData();
-
-    data.append("name", formData.name);
-    if (formData.phone !== originalData.phone) data.append("mobile", formData.phone);
-    if (formData.image instanceof File) data.append("image", formData.image);
-
-    mutation.mutate({ id: user.id, formData: data });
-  };
+  const data = new FormData();
+  if (formData.name !== originalData.name) data.append("name", formData.name);
+  if (formData.phone !== originalData.phone) data.append("mobile", formData.phone);
+  
+  // ✅ تحقق محسن لإلحاق الصورة فقط إذا كانت كائن File
+  if (formData.image instanceof File) {
+    data.append("image", formData.image);
+  }
+  
+  // (اختياري) منع إرسال الطلب إذا لم توجد أي تغييرات
+  if ([...data.entries()].length === 0) {
+    setSnackbar({
+      open: true,
+      message: "لم تقم بإجراء أي تغييرات لحفظها.",
+      variant: "info",
+    });
+    return;
+  }
+  console.log(formData); // للتصحيح
+  
+  mutation.mutate({ id: user.id, formData: data });
+};
 
   // حالة التحميل الأولية للصفحة
   if (isLoading) return (
