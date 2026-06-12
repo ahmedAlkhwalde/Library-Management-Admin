@@ -10,7 +10,7 @@ function BooksPage() {
   const [page, setPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
-  const [filters, setFilters] = useState({ category_id: "", status: "all" });
+  const [filters, setFilters] = useState({ category_id: "", status: "all" , category_name: "all" });
   
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [bookToDelete, setBookToDelete] = useState(null);
@@ -49,16 +49,9 @@ function BooksPage() {
     createBookMutation.mutate(formData);
   };
 
-  const handleUpdateBook = (formData) => {
-    formData.append("book_id", selectedBook.id);
-    updateBookMutation.mutate(formData);
-  };
-
-  const handleEditBook = (book) => {
-    console.log("Editing book:", book);
-    setSelectedBook(book);
-    setIsModalOpen(true);
-  };
+  const handleUpdateBook = async (formData) => {
+  return updateBookMutation.mutateAsync(formData);
+};
 
   const handleDeleteClick = (book) => {
     setBookToDelete(book);
@@ -85,13 +78,14 @@ function BooksPage() {
       <main className="p-6 max-w-7xl mx-auto">
         <BooksHeader onAddBook={() => setIsModalOpen(true)} />
         <BookTable
-          books={data?.books || []}
-          isLoading={isLoading}
-          onEdit={handleEditBook}
-          onDelete={handleDeleteClick}
-          filters={filters}
-          onFilterChange={handleFilterChange}
-        />
+            books={data?.books || []}
+            isLoading={isLoading}
+            onEdit={handleUpdateBook}
+            onDelete={handleDeleteClick}
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            updateLoading={updateBookMutation.isPending}
+          />
         <BookPagination
           currentPage={data?.pagination?.current_page}
           lastPage={data?.pagination?.last_page}

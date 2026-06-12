@@ -2,18 +2,38 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import apiClient from "../../../config/apiClient";
 
 
-export const fetchBooks = async (page = 1, categoryId = null, status = "all") => {
-  
-  if (categoryId) {
+export const fetchBooks = async (
+  page = 1,
+  categoryId = null,
+  status = "all"
+) => {
+
+  const hasFilters =
+    (categoryId !== null &&
+      categoryId !== undefined &&
+      categoryId !== "") ||
+    status !== "all";
+
+  if (hasFilters) {
+    const params = {
+      page,
+      status,
+    };
+
+    if (
+      categoryId !== null &&
+      categoryId !== undefined &&
+      categoryId !== ""
+    ) {
+      params.category_id = Number(categoryId);
+    }
+
     const response = await apiClient.get("/books/filter", {
-      params: { 
-        page: page,
-        category_id: Number(categoryId), 
-        status: status
-      }
+      params,
     });
 
     const data = response.data?.data;
+
     return {
       books: data?.books || [],
       pagination: data?.pagination,
@@ -28,12 +48,12 @@ export const fetchBooks = async (page = 1, categoryId = null, status = "all") =>
   });
 
   const data = response.data?.data;
+
   return {
     books: data?.books || [],
     pagination: data?.pagination,
   };
 };
-
 export const useBooksQuery = (page = 1, categoryId = null, status = "all") => {
   return useQuery({
     queryKey: ["books", page, categoryId, status],
