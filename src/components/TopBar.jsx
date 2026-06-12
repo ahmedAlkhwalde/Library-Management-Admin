@@ -6,10 +6,11 @@ import SearchIcon from "@mui/icons-material/Search";
 import { markAllNotificationsRead } from "../features/dashboard/store/dashboardSlice";
 import { searchBooks } from "../features/search/searchService";
 import BookDetailsModal from "../features/books/components/BookDetailsModal";
+import { Link } from "react-router-dom";
 
 export default function TopBar({ showSearch = true }) {
   const dispatch = useDispatch();
-  
+
   // جلب بيانات المستخدم والحساب من فرع main
   const userData = useSelector((state) => state.auth.user);
   const notificationsCount = useSelector(
@@ -117,7 +118,6 @@ export default function TopBar({ showSearch = true }) {
   return (
     <>
       <div className="hidden md:flex items-center justify-between px-6 py-3 bg-white border-b border-gray-200 shrink-0">
-        
         {/* منطقة البحث الديناميكية المحمية بشريط showSearch */}
         {showSearch ? (
           <div ref={searchRef} className="relative w-72">
@@ -179,7 +179,9 @@ export default function TopBar({ showSearch = true }) {
                         onClick={() => handleSelectBook(book)}
                       >
                         <img
-                          src={book.image || "https://picsum.photos/id/24/120/160"}
+                          src={
+                            book.image || "https://picsum.photos/id/24/120/160"
+                          }
                           alt={book.title}
                           className="w-10 h-14 rounded-lg object-cover border border-gray-200 shrink-0"
                         />
@@ -207,7 +209,9 @@ export default function TopBar({ showSearch = true }) {
                                   : "bg-red-50 text-red-700 border-red-100"
                               }`}
                             >
-                              {book.status === "available" ? "Available" : "Unavailable"}
+                              {book.status === "available"
+                                ? "Available"
+                                : "Unavailable"}
                             </span>
                           </div>
                         </div>
@@ -250,7 +254,9 @@ export default function TopBar({ showSearch = true }) {
                       Notifications
                     </p>
                     {notificationsCount === 0 && (
-                      <span className="text-xs text-gray-400">All caught up</span>
+                      <span className="text-xs text-gray-400">
+                        All caught up
+                      </span>
                     )}
                   </div>
                   <ul className="divide-y divide-gray-50 max-h-64 overflow-y-auto">
@@ -277,26 +283,28 @@ export default function TopBar({ showSearch = true }) {
           </div>
 
           {/* الملف الشخصي للأدمن مع الصورة الشخصية الحية أو رمز svg الاحتياطي */}
-          <div className="flex items-center gap-2 cursor-pointer group">
-            <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white text-sm font-semibold shrink-0 overflow-hidden">
-              {userData?.image ? (
-                <img
-                  className="w-8 h-8 rounded-full object-cover"
-                  src={userData.image}
-                  alt="Profile"
-                />
-              ) : (
-                initial
-              )}
+          <Link to={"/app/profile"}>
+            <div className="flex items-center gap-2 cursor-pointer group">
+              <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white text-sm font-semibold shrink-0 overflow-hidden">
+                {userData?.image ? (
+                  <img
+                    className="w-8 h-8 rounded-full object-cover"
+                    src={userData.image}
+                    alt="Profile"
+                  />
+                ) : (
+                  initial
+                )}
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-gray-800 leading-none">
+                  {displayName}
+                </p>
+                <p className="text-xs text-gray-400 mt-0.5">{displayRole}</p>
+              </div>
+              <KeyboardArrowDownIcon className="!w-4 !h-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
             </div>
-            <div>
-              <p className="text-sm font-semibold text-gray-800 leading-none">
-                {displayName}
-              </p>
-              <p className="text-xs text-gray-400 mt-0.5">{displayRole}</p>
-            </div>
-            <KeyboardArrowDownIcon className="!w-4 !h-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
-          </div>
+          </Link>
         </div>
       </div>
 
