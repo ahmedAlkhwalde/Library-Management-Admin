@@ -12,9 +12,9 @@ export default function BookTable({
   isLoading,
   onEdit,
   onDelete,
-  onUpdateBook,
   filters,
   onFilterChange,
+  updateLoading,
 }) {
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -35,6 +35,7 @@ const [imgError, setImgError] = useState(false);
   const handleEditClick = (book) => {
     setSelectedBook(book);
     setEditModalOpen(true);
+
   };
 
   const handleModalClose = () => {
@@ -43,14 +44,14 @@ const [imgError, setImgError] = useState(false);
     setSelectedBook(null);
   };
 
-  const handleUpdateSubmit = (formData) => {
-    if (onUpdateBook) {
-      onUpdateBook(formData);
-    } else if (onEdit) {
-      onEdit(formData);
-    }
+  const handleUpdateSubmit = async (formData) => {
+  try {
+    await onEdit(formData);
     handleModalClose();
-  };
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   return (
     <>
@@ -88,7 +89,7 @@ const [imgError, setImgError] = useState(false);
             border-blue-200
           "
         >
-          Category Selected
+          {filters.category_name}
         </span>
       )}
 
@@ -283,7 +284,7 @@ const [imgError, setImgError] = useState(false);
         mode="edit"
         book={selectedBook}
         onSubmit={handleUpdateSubmit}
-        isLoading={false} 
+        isLoading={updateLoading}
       />
     </>
   );

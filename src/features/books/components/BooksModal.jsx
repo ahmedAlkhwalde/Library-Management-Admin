@@ -10,7 +10,7 @@ export default function BookModal({
   onSubmit,
   mode,
   book = null,
-  isLoading = false,
+  isLoading,
 }) {
   const { data: categoriesData } = useCategoriesQuery();
   const [errors, setErrors] = useState({});
@@ -33,14 +33,8 @@ const [imgError, setImgError] = useState(false);
     setAuthor(book.author || "");
     setAvailableCopies(book.available_copies || "");
 
-    const category = categories.find(
-      (c) => c.name === book.category_name
-    );
-
-    setCategoryId(category?.id || "");
-
     setPreview(book.image || null);
-    setImage(book.image || null);
+    setImage(null);
   }
 
   if (mode === "create") {
@@ -67,7 +61,7 @@ const [imgError, setImgError] = useState(false);
     newErrors.author = "Author is required";
   }
 
-  if (!categoryId) {
+  if (mode === "create" && !categoryId) {
     newErrors.categoryId = "Category is required";
   }
 
@@ -93,25 +87,28 @@ const [imgError, setImgError] = useState(false);
     setPreview(URL.createObjectURL(file));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    if (!validate()) return;
-    
-    const formData = new FormData();
+ const handleSubmit = (e) => {
+  e.preventDefault();
 
-    formData.append("title", title);
-    formData.append("author", author);
-    formData.append("category_id", categoryId);
-    formData.append("available_copies", availableCopies);
+  if (!validate()) return;
 
-    if (image) {
-      formData.append("image", image);
-    }
+  const formData = new FormData();
 
-    onSubmit?.(formData);
-  };
+  if (mode === "edit" && book?.id) {
+    formData.append("book_id", book.id);
+  }
 
+  formData.append("title", title);
+  formData.append("author", author);
+  formData.append("category_id", categoryId);
+  formData.append("available_copies", availableCopies);
+
+  if (image instanceof File) {
+    formData.append("image", image);
+  }
+
+  onSubmit?.(formData);
+};
   
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
@@ -193,10 +190,17 @@ const [imgError, setImgError] = useState(false);
               </label>
 
               <select
-                value={categoryId}
-                onChange={(e) => setCategoryId(e.target.value)}
-                className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-blue-500"
+                  value={categoryId}
+                  onChange={(e) => setCategoryId(e.target.value)}
+                  disabled={mode === "edit"}
+                  className={`w-full rounded-xl border px-4 py-3 outline-none
+                  ${
+                    mode === "edit"
+                      ? "bg-gray-100 text-gray-500 border-gray-300 cursor-not-allowed"
+                      : "border-gray-200 focus:border-blue-500"
+                  }`}
               >
+                
                 <option value="">
                   Select Category
                 </option>
@@ -214,6 +218,11 @@ const [imgError, setImgError] = useState(false);
                     <p className="mt-1 text-sm text-red-500">
                         {errors.categoryId}
                     </p>
+                )}
+                {mode === "edit" && (
+                  <p className="mt-1 text-xs text-gray-500">
+                    Category cannot be changed after creating the book.
+                  </p>
                 )}
             </div>
 
@@ -303,8 +312,12 @@ const [imgError, setImgError] = useState(false);
             <button
   type="submit"
   disabled={isLoading}
-  className="rounded-xl bg-blue-600 px-5 py-2.5 font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+  className="flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
 >
+  {isLoading && (
+    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+  )}
+
   {isLoading
     ? mode === "edit"
       ? "Updating..."

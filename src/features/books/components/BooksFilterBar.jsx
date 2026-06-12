@@ -31,13 +31,14 @@ export default function BooksFilterBar({
     onFilterChange({
       ...filters,
       category_id: value?.id || "",
+      category_name: value?.name || "all",
     });
   };
 
   const handleStatusChange = (event) => {
     onFilterChange({
       ...filters,
-      status: event.target.value,
+      status: event.target.value || "all",
     });
   };
 
