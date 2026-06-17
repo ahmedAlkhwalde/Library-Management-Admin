@@ -16,17 +16,19 @@ export const fetchDashboardStats = async () => {
   };
 };
 
-export const fetchBorrowRequests = async () => {
-  const response = await apiClient.get("/borrows", {
-    params: { status: "pending" }
-  });
-  return Array.isArray(response.data) ? response.data : (response.data?.data || []);
-};
+// Maps the nested API borrow shape ({ user: {...}, book: {...} }) to the flat
+// fields BorrowRequestsTable / LateBorrowingsTable expect.
+const normalizeBorrow = (b) => ({
+  id: b.id,
+  status: b.status,
+  user_name: b.user?.name,
+  user_avatar: b.user?.image,
+  book_title: b.book?.title,
+  borrow_date: b.borrowed_at ?? b.requested_at,
+  due_date: b.due_at,
+});
 
-export const fetchActiveBorrows = async () => {
-  const response = await apiClient.get("/borrows", {
-    params: { status: "borrowed", page: 1 }
-  });
+const extractBorrows = (response) => {
   // shape: { data: { borrows: [...], pagination: {...} } }
   const borrows = response.data?.data?.borrows;
   if (Array.isArray(borrows)) return borrows;
@@ -36,15 +38,25 @@ export const fetchActiveBorrows = async () => {
   return [];
 };
 
+export const fetchBorrowRequests = async () => {
+  const response = await apiClient.get("/borrows", {
+    params: { status: "pending" }
+  });
+  return extractBorrows(response).map(normalizeBorrow);
+};
+
+export const fetchActiveBorrows = async () => {
+  const response = await apiClient.get("/borrows", {
+    params: { status: "borrowed", page: 1 }
+  });
+  return extractBorrows(response).map(normalizeBorrow);
+};
+
 export const fetchOverdueBorrows = async () => {
   const response = await apiClient.get("/borrows", {
     params: { status: "overdue", page: 1 }
   });
-  const borrows = response.data?.data?.borrows;
-  if (Array.isArray(borrows)) return borrows;
-  if (Array.isArray(response.data?.data)) return response.data.data;
-  if (Array.isArray(response.data)) return response.data;
-  return [];
+  return extractBorrows(response).map(normalizeBorrow);
 };
 
 export const confirmBorrowRequest = async (borrowId) => {
